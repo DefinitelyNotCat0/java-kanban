@@ -6,6 +6,11 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public SubTask(String name, String description, TaskStatus status, Long epicId) {
+        super(name, description, status);
+        this.epicId = epicId;
+    }
+
     public Long getEpicId() {
         return epicId;
     }
@@ -13,11 +18,11 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return "SubTask{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", epicId=" + epicId +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", epicId=" + getEpicId() +
                 '}';
     }
 }
