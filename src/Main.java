@@ -30,15 +30,28 @@ public class Main {
         printAllTasks(taskManager);
 
         // Обновление
-        taskManager.updateTask(new Task(task1.getId(), "Первая задача (upd)", "123--1", TaskStatus.NEW));
-        taskManager.updateTask(new Task(task2.getId(), "Задача 2", "aaaa", TaskStatus.DONE));
+        task1.setName("Первая задача (upd)");
+        task1.setDescription("123--1");
+        taskManager.updateTask(task1);
 
-        taskManager.updateEpic(new Epic(epic1.getId(), "Первый эпик updated", "111 --s"));
+        task2.setName("Задача 2");
+        task2.setDescription("aaaa");
+        task2.setStatus(TaskStatus.DONE);
+        taskManager.updateTask(task2);
 
-        taskManager.updateSubTask(new SubTask(subTask1Epic1.getId(), "Задача 1 первого эпика updated",
-                "1_1_1", TaskStatus.IN_PROGRESS, epic1.getId()));
-        taskManager.updateSubTask(new SubTask(subTask1Epic2.getId(), "Задача 1 второго эпика upd",
-                "2_1_1", TaskStatus.DONE, secondEpic.getId()));
+        epic1.setName("Первый эпик updated");
+        epic1.setDescription("111 --s");
+        taskManager.updateEpic(epic1);
+
+        subTask1Epic1.setName("Задача 1 первого эпика updated");
+        subTask1Epic1.setDescription("1_1_1");
+        subTask1Epic1.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateSubTask(subTask1Epic1);
+
+        subTask1Epic2.setName("Задача 1 второго эпика upd");
+        subTask1Epic2.setDescription("2_1_1");
+        subTask1Epic2.setStatus(TaskStatus.DONE);
+        taskManager.updateSubTask(subTask1Epic2);
 
         // Вывод
         printAllTasks(taskManager);

@@ -4,13 +4,6 @@ public class Task {
     private String description;
     private TaskStatus status;
 
-    public Task(Long id, String name, String description, TaskStatus status) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-    }
-
     public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
@@ -35,6 +28,14 @@ public class Task {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setStatus(TaskStatus status) {

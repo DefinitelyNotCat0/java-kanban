@@ -81,9 +81,8 @@ public class TaskManager {
     // Удалить эпик по идентификатору
     public void deleteEpicById(Long id) {
         // Удаляем связанные подзадачи
-        ArrayList<Long> epicSubTaskIdList = new ArrayList<>(getEpicById(id).getSubTaskIdArrayList());
-        for (Long subTaskId : epicSubTaskIdList) {
-            deleteSubTaskById(subTaskId);
+        for (Long subTaskId : getEpicById(id).getSubTaskIdArrayList()) {
+            subTaskHashMap.remove(subTaskId);
         }
 
         epicHashMap.remove(id);
@@ -100,7 +99,7 @@ public class TaskManager {
     // Обновить задачу
     public void updateTask(Task task) {
         if (!taskHashMap.containsKey(task.getId())) {
-            System.out.println("Задча с id " + task.getId() + " не найдена. Обновление не применено");
+            System.out.println("Задача с id " + task.getId() + " не найдена. Обновление не применено");
             return;
         }
         taskHashMap.put(task.getId(), task);
@@ -112,10 +111,6 @@ public class TaskManager {
             System.out.println("Эпик с id " + epic.getId() + " не найден. Обновление не применено");
             return;
         }
-
-        // Статус и список подзадач возьмем из эпика, который обновляем
-        epic.setStatus(getEpicById(epic.getId()).getStatus());
-        epic.setSubTaskIdArrayList(getEpicById(epic.getId()).getSubTaskIdArrayList());
 
         epicHashMap.put(epic.getId(), epic);
     }
@@ -167,7 +162,7 @@ public class TaskManager {
         }
     }
 
-    public Long getNextId() {
+    private Long getNextId() {
         return nextId++;
     }
 }
