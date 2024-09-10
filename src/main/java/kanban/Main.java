@@ -1,7 +1,16 @@
+package kanban;
+
+import kanban.manager.Managers;
+import kanban.manager.TaskManager;
+import kanban.task.Epic;
+import kanban.task.SubTask;
+import kanban.task.Task;
+import kanban.task.TaskStatus;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         /* Тестирование */
         // Создадим 2 задачи
@@ -25,6 +34,10 @@ public class Main {
 
         SubTask subTask1Epic2 = new SubTask("Задача 1 второго эпика", "2_1", TaskStatus.NEW, secondEpic.getId());
         taskManager.createSubTask(subTask1Epic2);
+
+        // Получим несколько тикетов (для истории)
+        taskManager.getTaskById(1L);
+        taskManager.getEpicById(6L);
 
         // Вывод
         printAllTasks(taskManager);
@@ -53,6 +66,11 @@ public class Main {
         subTask1Epic2.setStatus(TaskStatus.DONE);
         taskManager.updateSubTask(subTask1Epic2);
 
+        // Получим несколько тикетов (для истории)
+        taskManager.getSubTaskById(4L);
+        taskManager.getSubTaskById(4L);
+        taskManager.getTaskById(1L);
+
         // Вывод
         printAllTasks(taskManager);
 
@@ -73,5 +91,8 @@ public class Main {
 
         System.out.println("\nПечатаем список подзадач:");
         System.out.println(taskManager.getSubTaskList());
+
+        System.out.println("\nПечатаем историю:");
+        System.out.println(taskManager.getHistory());
     }
 }
