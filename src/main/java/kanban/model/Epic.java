@@ -1,4 +1,4 @@
-package kanban.task;
+package kanban.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,5 +44,14 @@ public class Epic extends Task {
                 Objects.equals(super.getDescription(), epic.getDescription()) &&
                 Objects.equals(super.getStatus(), epic.getStatus()) &&
                 Arrays.equals(subTaskList.toArray(), epic.subTaskList.toArray());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+
+        result = prime * result + subTaskList.hashCode();
+        return result;
     }
 }

@@ -2,21 +2,22 @@ package kanban.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import kanban.task.Epic;
-import kanban.task.SubTask;
-import kanban.task.Task;
-import kanban.task.TaskStatus;
+import kanban.model.Epic;
+import kanban.model.SubTask;
+import kanban.model.Task;
+import kanban.model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static kanban.task.TaskStatus.DONE;
-import static kanban.task.TaskStatus.IN_PROGRESS;
-import static kanban.task.TaskStatus.NEW;
+import static kanban.model.TaskStatus.DONE;
+import static kanban.model.TaskStatus.IN_PROGRESS;
+import static kanban.model.TaskStatus.NEW;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryTaskManagerTest {
     private InMemoryTaskManager taskManager;
@@ -159,7 +160,9 @@ class InMemoryTaskManagerTest {
         taskManager.updateTask(newTask);
 
         taskManager.deleteTaskById(taskId);
-        assertNull(taskManager.getTaskById(taskId), "Задача не удалена");
+        assertThrows(NoSuchElementException.class,
+                () -> taskManager.getTaskById(taskId),
+                "Задача не удалена");
     }
 
     @Test
@@ -171,8 +174,12 @@ class InMemoryTaskManagerTest {
         final Long subTaskId = taskManager.createSubTask(subTask);
 
         taskManager.deleteEpicById(epicId);
-        assertNull(taskManager.getEpicById(epicId), "Эпик не удален");
-        assertNull(taskManager.getSubTaskById(subTaskId), "Подзадача эпика не удалена");
+        assertThrows(NoSuchElementException.class,
+                () -> taskManager.getEpicById(epicId),
+                "Эпик не удален");
+        assertThrows(NoSuchElementException.class,
+                () -> taskManager.getSubTaskById(subTaskId),
+                "Подзадача эпика не удалена");
     }
 
     @Test
@@ -184,7 +191,9 @@ class InMemoryTaskManagerTest {
         final Long subTaskId = taskManager.createSubTask(subTask);
 
         taskManager.deleteSubTaskById(subTaskId);
-        assertNull(taskManager.getSubTaskById(subTaskId), "Подзадача не удалена");
+        assertThrows(NoSuchElementException.class,
+                () -> taskManager.getSubTaskById(subTaskId),
+                "Подзадача не удалена");
         assertEquals(0,
                 taskManager.getEpicById(epicId).getsubTaskList().size(),
                 "Подзадача не удалена из эпика");

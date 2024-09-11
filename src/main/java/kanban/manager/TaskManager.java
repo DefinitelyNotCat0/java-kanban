@@ -3,9 +3,9 @@ package kanban.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import kanban.task.Epic;
-import kanban.task.SubTask;
-import kanban.task.Task;
+import kanban.model.Epic;
+import kanban.model.SubTask;
+import kanban.model.Task;
 
 public interface TaskManager {
     // Создать задачу

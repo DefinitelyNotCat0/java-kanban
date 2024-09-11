@@ -2,7 +2,7 @@ package kanban.manager;
 
 import java.util.List;
 
-import kanban.task.Task;
+import kanban.model.Task;
 
 public interface HistoryManager {
     // Пометить задачу как просмотренную
