@@ -2,16 +2,15 @@ package kanban;
 
 import kanban.manager.Managers;
 import kanban.manager.TaskManager;
-import kanban.task.Epic;
-import kanban.task.SubTask;
-import kanban.task.Task;
-import kanban.task.TaskStatus;
+import kanban.model.Epic;
+import kanban.model.SubTask;
+import kanban.model.Task;
+import kanban.model.TaskStatus;
 
 public class Main {
 
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-
         /* Тестирование */
         // Создадим 2 задачи
         Task task1 = new Task("Первая задача", "123", TaskStatus.IN_PROGRESS);
@@ -36,8 +35,8 @@ public class Main {
         taskManager.createSubTask(subTask1Epic2);
 
         // Получим несколько тикетов (для истории)
-        taskManager.getTaskById(1L);
-        taskManager.getEpicById(6L);
+        taskManager.getTaskById(task1.getId());
+        taskManager.getEpicById(secondEpic.getId());
 
         // Вывод
         printAllTasks(taskManager);
@@ -67,9 +66,9 @@ public class Main {
         taskManager.updateSubTask(subTask1Epic2);
 
         // Получим несколько тикетов (для истории)
-        taskManager.getSubTaskById(4L);
-        taskManager.getSubTaskById(4L);
-        taskManager.getTaskById(1L);
+        taskManager.getSubTaskById(subTask1Epic1.getId());
+        taskManager.getSubTaskById(subTask1Epic1.getId());
+        taskManager.getTaskById(task1.getId());
 
         // Вывод
         printAllTasks(taskManager);
@@ -77,6 +76,19 @@ public class Main {
         // Удаление
         taskManager.deleteTaskById(task2.getId());
         taskManager.deleteEpicById(epic1.getId());
+
+        // Вывод
+        printAllTasks(taskManager);
+
+        // Получим тикеты для истории (суммарно больше 10)
+        taskManager.getTaskById(task1.getId());
+        taskManager.getSubTaskById(subTask1Epic2.getId());
+        taskManager.getTaskById(task1.getId());
+        taskManager.getEpicById(secondEpic.getId());
+        taskManager.getTaskById(task1.getId());
+        taskManager.getSubTaskById(subTask1Epic2.getId());
+        taskManager.getTaskById(task1.getId());
+        taskManager.getEpicById(secondEpic.getId());
 
         // Вывод
         printAllTasks(taskManager);
@@ -93,6 +105,7 @@ public class Main {
         System.out.println(taskManager.getSubTaskList());
 
         System.out.println("\nПечатаем историю:");
+        System.out.println("Количество тикетов в истории: " + taskManager.getHistory().size());
         System.out.println(taskManager.getHistory());
     }
 }

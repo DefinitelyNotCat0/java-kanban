@@ -3,14 +3,15 @@ package kanban.manager;
 import java.util.ArrayList;
 import java.util.List;
 
-import kanban.task.Task;
+import kanban.model.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final List<Task> taskHistoryList = new ArrayList<>(10);
+    public static final Integer MAX_SIZE = 10;
+    private final List<Task> taskHistoryList = new ArrayList<>(MAX_SIZE);
 
     @Override
     public void add(Task task) {
-        if (taskHistoryList.size() >= 10) {
+        if (taskHistoryList.size() >= MAX_SIZE) {
             taskHistoryList.remove(0);
         }
         taskHistoryList.add(task);
@@ -18,6 +19,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        return taskHistoryList;
+        return new ArrayList<>(taskHistoryList);
     }
 }

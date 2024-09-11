@@ -1,4 +1,4 @@
-package kanban.task;
+package kanban.model;
 
 import java.util.Objects;
 
@@ -48,5 +48,14 @@ public class SubTask extends Task {
                 Objects.equals(super.getDescription(), subTask.getDescription()) &&
                 Objects.equals(super.getStatus(), subTask.getStatus()) &&
                 Objects.equals(epicId, subTask.epicId);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+
+        result = prime * result + ((epicId == null) ? 0 : epicId.hashCode());
+        return result;
     }
 }
