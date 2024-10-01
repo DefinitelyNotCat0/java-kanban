@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import static kanban.model.TaskStatus.NEW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class InMemoryHistoryManagerTest {
     private InMemoryHistoryManager historyManager;
@@ -38,14 +37,18 @@ class InMemoryHistoryManagerTest {
 
         assertEquals(3, historyManager.getHistory().size(), "Неверное количество элементов");
         assertEquals(subTask, historyManager.getHistory().get(2), "Подзадачи не совпадают");
+    }
 
-        for (int id = 4; id <= InMemoryHistoryManager.MAX_SIZE + 1; id++) {
-            historyManager.add(new Task((long) id, "Test task", "Test createTask description", NEW));
-        }
+    @Test
+    void addSameTaskTwice() {
+        Task task = new Task(1L, "Test task", "Test task description", NEW);
 
-        assertEquals(InMemoryHistoryManager.MAX_SIZE,
-                historyManager.getHistory().size(),
-                "Неверное количество элементов");
-        assertNotEquals(task, historyManager.getHistory().get(0));
+        historyManager.add(task);
+        assertEquals(1, historyManager.getHistory().size(), "Неверное количество элементов'");
+        assertEquals(task, historyManager.getHistory().get(0), "Задачи не совпадают");
+
+        historyManager.add(task);
+        assertEquals(1, historyManager.getHistory().size(), "Неверное количество элементов'");
+        assertEquals(task, historyManager.getHistory().get(0), "Задачи не совпадают");
     }
 }
