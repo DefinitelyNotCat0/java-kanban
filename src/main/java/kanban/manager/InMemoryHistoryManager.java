@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kanban.model.Node;
 import kanban.model.Task;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -13,19 +14,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
     private int size = 0;
-
-    // Узел
-    private static class Node {
-        Task item;
-        Node next;
-        Node prev;
-
-        Node(Node prev, Task element, Node next) {
-            this.item = element;
-            this.next = next;
-            this.prev = prev;
-        }
-    }
 
     // Добавляет узел с задачей в конец
     private Node linkLast(Task task) {
@@ -36,7 +24,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (oldTail == null) {
             head = newNode;
         } else {
-            oldTail.next = newNode;
+            oldTail.setNext(newNode);
+            ;
         }
         size++;
 
@@ -45,24 +34,25 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     // Удаляем узел
     private void removeNode(Node node) {
-        final Node next = node.next;
-        final Node prev = node.prev;
+        final Node next = node.getNext();
+        final Node prev = node.getPrev();
 
         if (prev == null) {
             head = next;
         } else {
-            prev.next = next;
-            node.prev = null;
+            prev.setNext(next);
+            node.setPrev(null);
+            ;
         }
 
         if (next == null) {
             tail = prev;
         } else {
-            next.prev = prev;
-            node.next = null;
+            next.setPrev(prev);
+            node.setNext(null);
         }
 
-        node.item = null;
+        node.setItem(null);
         size--;
     }
 
@@ -72,8 +62,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node currentNode = head;
 
         while (currentNode != null) {
-            tasks.add(currentNode.item);
-            currentNode = currentNode.next;
+            tasks.add(currentNode.getItem());
+            currentNode = currentNode.getNext();
         }
 
         return tasks;
