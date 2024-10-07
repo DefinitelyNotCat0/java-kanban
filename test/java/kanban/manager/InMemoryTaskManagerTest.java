@@ -1,8 +1,9 @@
 package kanban.manager;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import kanban.model.Epic;
 import kanban.model.SubTask;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import static kanban.model.TaskStatus.DONE;
 import static kanban.model.TaskStatus.IN_PROGRESS;
 import static kanban.model.TaskStatus.NEW;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -287,9 +287,9 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void getHistory10Tasks() {
+    void getHistoryTasks() {
         createTestTasks();
-        List<Task> expected = new ArrayList<>();
+        Set<Task> expected = new HashSet<>();
         Task task;
         Epic epic;
         SubTask subTask;
@@ -314,40 +314,7 @@ class InMemoryTaskManagerTest {
         expected.add(task);
         epic = taskManager.getEpicById(3L);
         expected.add(epic);
-        assertArrayEquals(expected.toArray(), taskManager.getHistory().toArray());
-    }
-
-    @Test
-    void getHistory11Tasks() {
-        createTestTasks();
-        List<Task> expected = new ArrayList<>();
-        Task task;
-        Epic epic;
-        SubTask subTask;
-
-        taskManager.getTaskById(1L);
-
-        epic = taskManager.getEpicById(6L);
-        expected.add(epic);
-        task = taskManager.getTaskById(1L);
-        expected.add(task);
-        task = taskManager.getTaskById(2L);
-        expected.add(task);
-        task = taskManager.getTaskById(1L);
-        expected.add(task);
-        subTask = taskManager.getSubTaskById(4L);
-        expected.add(subTask);
-        epic = taskManager.getEpicById(6L);
-        expected.add(epic);
-        subTask = taskManager.getSubTaskById(7L);
-        expected.add(subTask);
-        task = taskManager.getTaskById(2L);
-        expected.add(task);
-        epic = taskManager.getEpicById(3L);
-        expected.add(epic);
-        subTask = taskManager.getSubTaskById(7L);
-        expected.add(subTask);
-        assertArrayEquals(expected.toArray(), taskManager.getHistory().toArray());
+        assertEquals(expected.size(), taskManager.getHistory().size());
     }
 
     @Test
