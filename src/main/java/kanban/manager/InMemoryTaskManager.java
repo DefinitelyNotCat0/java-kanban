@@ -20,7 +20,9 @@ public class InMemoryTaskManager implements TaskManager {
     // Создать задачу
     @Override
     public Long createTask(Task task) {
-        task.setId(getNextId());
+        if (task.getId() == null) {
+            task.setId(getNextId());
+        }
         taskHashMap.put(task.getId(), task);
         return task.getId();
     }
@@ -28,7 +30,9 @@ public class InMemoryTaskManager implements TaskManager {
     // Создать эпик
     @Override
     public Long createEpic(Epic epic) {
-        epic.setId(getNextId());
+        if (epic.getId() == null) {
+            epic.setId(getNextId());
+        }
         epicHashMap.put(epic.getId(), epic);
         return epic.getId();
     }
@@ -42,7 +46,9 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         }
 
-        subTask.setId(getNextId());
+        if (subTask.getId() == null) {
+            subTask.setId(getNextId());
+        }
         subTaskHashMap.put(subTask.getId(), subTask);
 
         // Добавляем id в список подзадач эпика и проверяем статус
