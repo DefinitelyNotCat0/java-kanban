@@ -1,5 +1,8 @@
 package kanban;
 
+import java.io.File;
+
+import kanban.manager.FileBackedTaskManager;
 import kanban.manager.Managers;
 import kanban.manager.TaskManager;
 import kanban.model.Epic;
@@ -92,6 +95,20 @@ public class Main {
 
         // Вывод
         printAllTasks(taskManager);
+
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(new File("test.csv"));
+        fileBackedTaskManager.createTask(task2);
+        fileBackedTaskManager.createEpic(epic1);
+        subTask1Epic1.setEpicId(epic1.getId());
+        subTask2Epic1.setEpicId(epic1.getId());
+        fileBackedTaskManager.createSubTask(subTask1Epic1);
+        fileBackedTaskManager.createSubTask(subTask2Epic1);
+        fileBackedTaskManager.deleteSubTaskById(subTask1Epic1.getId());
+        task2.setName("aaaaaaaaaaaaa");
+        fileBackedTaskManager.updateTask(task2);
+        FileBackedTaskManager fileBackedTaskManager2 = FileBackedTaskManager.loadFromFile(new File("test.csv"));
+        fileBackedTaskManager2.createTask(task1);
+        printAllTasks(fileBackedTaskManager2);
     }
 
     private static void printAllTasks(TaskManager taskManager) {

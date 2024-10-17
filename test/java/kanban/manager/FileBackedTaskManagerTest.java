@@ -1,9 +1,9 @@
 package kanban.manager;
 
-import java.util.HashSet;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import kanban.model.Epic;
 import kanban.model.SubTask;
@@ -15,16 +15,25 @@ import org.junit.jupiter.api.Test;
 import static kanban.model.TaskStatus.DONE;
 import static kanban.model.TaskStatus.IN_PROGRESS;
 import static kanban.model.TaskStatus.NEW;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class InMemoryTaskManagerTest {
-    private InMemoryTaskManager taskManager;
+class FileBackedTaskManagerTest {
+    private static final String testFileName = "FileBackedTaskManagerTest";
+    private static final String fileExtension = ".csv";
+    private static File testFile;
+    private FileBackedTaskManager taskManager;
 
     @BeforeEach
     void setUp() {
-        taskManager = new InMemoryTaskManager();
+        try {
+            testFile = File.createTempFile(testFileName, fileExtension);
+            taskManager = new FileBackedTaskManager(testFile);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException.getMessage());
+        }
     }
 
     private void createTestTasks() {
@@ -51,6 +60,32 @@ class InMemoryTaskManagerTest {
 
     private int getAllTaskTypesSize() {
         return taskManager.getTaskList().size() + taskManager.getEpicList().size() + taskManager.getSubTaskList().size();
+    }
+
+    @Test
+    void createFileAndLoadFromIt() {
+        // Слздаем задачи (и заполнеям файл)
+        createTestTasks();
+        // Создам новй менеджер без задач
+        FileBackedTaskManager taskManager2 = new FileBackedTaskManager(null);
+        assertEquals(0, taskManager2.getTaskList().size());
+        assertEquals(0, taskManager2.getSubTaskList().size());
+        assertEquals(0, taskManager2.getEpicList().size());
+
+        // Заполняем новый менеджер задачами из файла, который был создан первым менеджером
+        taskManager2 = FileBackedTaskManager.loadFromFile(testFile);
+        assertEquals(2, taskManager2.getTaskList().size());
+        assertEquals(3, taskManager2.getSubTaskList().size());
+        assertEquals(2, taskManager2.getEpicList().size());
+
+        // Проверяем, что задачи первого менеджера совпали с задачами второго
+        assertArrayEquals(taskManager.getTaskList().toArray(), taskManager2.getTaskList().toArray());
+
+        // Проверяем, что подзадачи первого менеджера совпали с подзадачами второго
+        assertArrayEquals(taskManager.getSubTaskList().toArray(), taskManager2.getSubTaskList().toArray());
+
+        // Проверяем, что эпики первого менеджера совпали с эпиками второго
+        assertArrayEquals(taskManager.getEpicList().toArray(), taskManager2.getEpicList().toArray());
     }
 
     @Test
@@ -89,7 +124,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void createSubtask() {
+    void createSubTask() {
         Epic epic = new Epic("Test createEpic", "Test createTask description");
         final Long epicId = taskManager.createEpic(epic);
         final Task savedEpic = taskManager.getEpicById(epicId);
@@ -276,52 +311,5 @@ class InMemoryTaskManagerTest {
         assertEquals(1,
                 taskManager.getEpicById(epicId2).getSubTaskList().size(),
                 "Неверное количестов подзадач у эпика");
-    }
-
-
-    @Test
-    void getSubTaskListByEpicId() {
-        createTestTasks();
-        Long epicId = taskManager.getEpicList().get(0).getId();
-        assertEquals(2, taskManager.getSubTaskListByEpicId(epicId).size());
-    }
-
-    @Test
-    void getHistoryTasks() {
-        createTestTasks();
-        Set<Task> expected = new HashSet<>();
-        Task task;
-        Epic epic;
-        SubTask subTask;
-
-        task = taskManager.getTaskById(1L);
-        expected.add(task);
-        epic = taskManager.getEpicById(6L);
-        expected.add(epic);
-        task = taskManager.getTaskById(1L);
-        expected.add(task);
-        task = taskManager.getTaskById(2L);
-        expected.add(task);
-        task = taskManager.getTaskById(1L);
-        expected.add(task);
-        subTask = taskManager.getSubTaskById(4L);
-        expected.add(subTask);
-        epic = taskManager.getEpicById(6L);
-        expected.add(epic);
-        subTask = taskManager.getSubTaskById(7L);
-        expected.add(subTask);
-        task = taskManager.getTaskById(2L);
-        expected.add(task);
-        epic = taskManager.getEpicById(3L);
-        expected.add(epic);
-        assertEquals(expected.size(), taskManager.getHistory().size());
-    }
-
-    @Test
-    void shouldBeNewStatusForCreatedEpic() {
-        Epic firstEpic = new Epic("Первый эпик", "111");
-        taskManager.createEpic(firstEpic);
-
-        assertEquals(taskManager.getEpicById(1L).getStatus(), NEW, "Статус у нового эпика не равен \"NEW\"");
     }
 }

@@ -3,6 +3,7 @@ package kanban.model;
 import java.util.Objects;
 
 public class SubTask extends Task {
+    private static final TaskType TASK_TYPE = TaskType.SUBTASK;
     private Long epicId;
 
     public SubTask(Long id, String name, String description, TaskStatus status, Long epicId) {
@@ -24,9 +25,15 @@ public class SubTask extends Task {
     }
 
     @Override
+    public TaskType getTaskType() {
+        return TASK_TYPE;
+    }
+
+    @Override
     public String toString() {
         return "SubTask{" +
                 "id=" + getId() +
+                ", taskType=" + getTaskType() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
