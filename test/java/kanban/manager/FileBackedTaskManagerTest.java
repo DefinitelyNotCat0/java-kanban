@@ -143,8 +143,8 @@ class FileBackedTaskManagerTest {
         assertEquals(1, subTasks.size(), "Неверное количество подзадач.");
         assertEquals(subTask, subTasks.get(0), "Подзадачи не совпадают.");
 
-        assertEquals(1, epic.getsubTaskList().size(), "Неверное количество подзадач у эпика.");
-        assertEquals(subTask, epic.getsubTaskList().get(0),
+        assertEquals(1, epic.getSubTaskList().size(), "Неверное количество подзадач у эпика.");
+        assertEquals(subTask, epic.getSubTaskList().get(0),
                 "ID подзадачи у эпика не совпадает с ID подзадачи.");
 
         subTask.setStatus(IN_PROGRESS);
@@ -230,7 +230,7 @@ class FileBackedTaskManagerTest {
                 () -> taskManager.getSubTaskById(subTaskId),
                 "Подзадача не удалена");
         assertEquals(0,
-                taskManager.getEpicById(epicId).getsubTaskList().size(),
+                taskManager.getEpicById(epicId).getSubTaskList().size(),
                 "Подзадача не удалена из эпика");
     }
 
@@ -275,10 +275,10 @@ class FileBackedTaskManagerTest {
         assertEquals(newSubTask, taskManager.getSubTaskById(subTaskId), "Подзадачи не равны");
         assertEquals(1, taskManager.getSubTaskList().size(), "Неверное количестов подзадач");
         assertEquals(taskManager.getSubTaskById(subTaskId),
-                taskManager.getEpicById(epicId).getsubTaskList().get(0),
+                taskManager.getEpicById(epicId).getSubTaskList().get(0),
                 "Подзадача не совпадает с подзадачей эпика");
         assertEquals(1,
-                taskManager.getEpicById(epicId).getsubTaskList().size(),
+                taskManager.getEpicById(epicId).getSubTaskList().size(),
                 "Неверное количестов подзадач у эпика");
 
         newSubTask.setStatus(DONE);
@@ -288,10 +288,10 @@ class FileBackedTaskManagerTest {
         assertEquals(newSubTask, taskManager.getSubTaskById(subTaskId), "Подзадачи не равны");
         assertEquals(1, taskManager.getSubTaskList().size(), "Неверное количестов подзадач");
         assertEquals(taskManager.getSubTaskById(subTaskId),
-                taskManager.getEpicById(epicId).getsubTaskList().get(0),
+                taskManager.getEpicById(epicId).getSubTaskList().get(0),
                 "Подзадача не совпадает с подзадачей эпика");
         assertEquals(1,
-                taskManager.getEpicById(epicId).getsubTaskList().size(),
+                taskManager.getEpicById(epicId).getSubTaskList().size(),
                 "Неверное количестов подзадач у эпика");
 
         newSubTask.setStatus(IN_PROGRESS);
@@ -303,13 +303,13 @@ class FileBackedTaskManagerTest {
         assertEquals(newSubTask, taskManager.getSubTaskById(subTaskId), "Подзадачи не равны");
         assertEquals(1, taskManager.getSubTaskList().size(), "Неверное количестов подзадач");
         assertEquals(0,
-                taskManager.getEpicById(epicId).getsubTaskList().size(),
+                taskManager.getEpicById(epicId).getSubTaskList().size(),
                 "Подзадача не была удалена из эпика");
         assertEquals(taskManager.getSubTaskById(subTaskId),
-                taskManager.getEpicById(epicId2).getsubTaskList().get(0),
+                taskManager.getEpicById(epicId2).getSubTaskList().get(0),
                 "Подзадача не совпадает с подзадачей эпика");
         assertEquals(1,
-                taskManager.getEpicById(epicId2).getsubTaskList().size(),
+                taskManager.getEpicById(epicId2).getSubTaskList().size(),
                 "Неверное количестов подзадач у эпика");
     }
 }

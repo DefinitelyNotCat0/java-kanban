@@ -3,6 +3,7 @@ package kanban.model;
 import java.util.Objects;
 
 public class Task {
+    private static final TaskType TASK_TYPE = TaskType.TASK;
     private Long id;
     private String name;
     private String description;
@@ -45,6 +46,10 @@ public class Task {
         this.description = description;
     }
 
+    public TaskType getTaskType() {
+        return TASK_TYPE;
+    }
+
     public TaskStatus getStatus() {
         return status;
     }
@@ -57,6 +62,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "id=" + getId() +
+                ", taskType=" + getTaskType() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +

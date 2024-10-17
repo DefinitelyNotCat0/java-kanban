@@ -53,7 +53,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         // Добавляем id в список подзадач эпика и проверяем статус
         Epic epic = epicHashMap.get(subTask.getEpicId());
-        epic.getsubTaskList().add(subTask);
+        epic.getSubTaskList().add(subTask);
         epic.setStatus(getEpicStatus(subTask.getEpicId()));
 
         return subTask.getId();
@@ -79,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (Epic epic : getEpicList()) {
             epic.setStatus(TaskStatus.NEW);
-            epic.getsubTaskList().clear();
+            epic.getSubTaskList().clear();
         }
     }
 
@@ -132,7 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpicById(Long id) {
         // Удаляем связанные подзадачи
-        for (SubTask subTask : epicHashMap.get(id).getsubTaskList()) {
+        for (SubTask subTask : epicHashMap.get(id).getSubTaskList()) {
             subTaskHashMap.remove(subTask.getId());
         }
 
@@ -143,7 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTaskById(Long id) {
         Epic epic = epicHashMap.get(subTaskHashMap.get(id).getEpicId());
-        epic.getsubTaskList().remove(subTaskHashMap.get(id));
+        epic.getSubTaskList().remove(subTaskHashMap.get(id));
         subTaskHashMap.remove(id);
         epic.setStatus(getEpicStatus(epic.getId()));
     }
@@ -195,8 +195,8 @@ public class InMemoryTaskManager implements TaskManager {
         Long newEpicId = subTask.getEpicId();
         if (!oldEpicId.equals(newEpicId)) {
             // У подзадачи поменялся эпик
-            epicHashMap.get(oldEpicId).getsubTaskList().remove(currentSubTask);
-            epicHashMap.get(newEpicId).getsubTaskList().add(currentSubTask);
+            epicHashMap.get(oldEpicId).getSubTaskList().remove(currentSubTask);
+            epicHashMap.get(newEpicId).getSubTaskList().add(currentSubTask);
             currentSubTask.setEpicId(newEpicId);
 
             epicHashMap.get(oldEpicId).setStatus(getEpicStatus(oldEpicId));
@@ -227,7 +227,7 @@ public class InMemoryTaskManager implements TaskManager {
     // Получить список подзадач определенного эпика
     @Override
     public ArrayList<SubTask> getSubTaskListByEpicId(Long id) {
-        return epicHashMap.get(id).getsubTaskList();
+        return epicHashMap.get(id).getSubTaskList();
     }
 
     // Получить историю просмотров задач

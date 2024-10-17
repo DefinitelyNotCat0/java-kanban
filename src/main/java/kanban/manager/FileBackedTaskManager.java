@@ -23,6 +23,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             String.format("id%1$stype%1$sname%1$sstatus%1$sdescription%1$sepic", CSV_SEPARATOR);
     private final File file;
 
+    public FileBackedTaskManager(File file) {
+        this.file = file;
+    }
+
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
@@ -32,23 +36,61 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             while (bufferedReader.ready()) {
                 Task task = fromString(bufferedReader.readLine());
 
-                if (task instanceof SubTask) {
+                if (TaskType.SUBTASK.equals(task.getTaskType())) {
                     fileBackedTaskManager.createSubTask((SubTask) task);
-                } else if (task instanceof Epic) {
+                } else if (TaskType.EPIC.equals(task.getTaskType())) {
                     fileBackedTaskManager.createEpic((Epic) task);
                 } else {
                     fileBackedTaskManager.createTask(task);
                 }
             }
         } catch (IOException ioException) {
-            throw new ManagerSaveException(ioException.getMessage());
+            throw new RuntimeException(ioException.getMessage());
         }
 
         return fileBackedTaskManager;
     }
 
-    public FileBackedTaskManager(File file) {
-        this.file = file;
+    private static String toString(Task task) {
+        String epicId = "";
+        TaskType taskType = TaskType.TASK;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        taskType = task.getTaskType();
+        if (TaskType.SUBTASK.equals(taskType)) {
+            epicId = String.valueOf(((SubTask) task).getEpicId());
+        }
+
+        stringBuilder
+                .append(task.getId()).append(CSV_SEPARATOR)
+                .append(taskType).append(CSV_SEPARATOR)
+                .append(task.getName()).append(CSV_SEPARATOR)
+                .append(task.getStatus()).append(CSV_SEPARATOR)
+                .append(task.getDescription()).append(CSV_SEPARATOR)
+                .append(epicId);
+
+        return stringBuilder.toString();
+    }
+
+    private static Task fromString(String value) {
+        String[] parameters = value.split(CSV_SEPARATOR);
+        Long id = Long.valueOf(parameters[0]);
+        TaskType taskType = TaskType.valueOf(parameters[1]);
+        String name = parameters[2];
+        TaskStatus taskStatus = TaskStatus.valueOf(parameters[3]);
+        String description = parameters[4];
+
+        Task task;
+        if (TaskType.SUBTASK.equals(taskType)) {
+            Long epicId = Long.valueOf(parameters[5]);
+            task = new SubTask(id, name, description, taskStatus, epicId);
+        } else if (TaskType.EPIC.equals(taskType)) {
+            task = new Epic(id, name, description);
+        } else {
+            task = new Task(id, name, description, taskStatus);
+        }
+
+        return task;
     }
 
     @Override
@@ -142,49 +184,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         } catch (IOException ioException) {
             throw new ManagerSaveException(ioException.getMessage());
         }
-    }
-
-    private static String toString(Task task) {
-        String epicId = "";
-        TaskType taskType = TaskType.TASK;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        if (task instanceof SubTask) {
-            taskType = TaskType.SUBTASK;
-            epicId = String.valueOf(((SubTask) task).getEpicId());
-        } else if (task instanceof Epic) {
-            taskType = TaskType.EPIC;
-        }
-
-        stringBuilder
-                .append(task.getId()).append(CSV_SEPARATOR)
-                .append(taskType).append(CSV_SEPARATOR)
-                .append(task.getName()).append(CSV_SEPARATOR)
-                .append(task.getStatus()).append(CSV_SEPARATOR)
-                .append(task.getDescription()).append(CSV_SEPARATOR)
-                .append(epicId);
-
-        return stringBuilder.toString();
-    }
-
-    private static Task fromString(String value) {
-        String[] parameters = value.split(CSV_SEPARATOR);
-        Long id = Long.valueOf(parameters[0]);
-        TaskType taskType = TaskType.valueOf(parameters[1]);
-        String name = parameters[2];
-        TaskStatus taskStatus = TaskStatus.valueOf(parameters[3]);
-        String description = parameters[4];
-
-        Task task;
-        if (TaskType.SUBTASK.equals(taskType)) {
-            Long epicId = Long.valueOf(parameters[5]);
-            task = new SubTask(id, name, description, taskStatus, epicId);
-        } else if (TaskType.EPIC.equals(taskType)) {
-            task = new Epic(id, name, description);
-        } else {
-            task = new Task(id, name, description, taskStatus);
-        }
-
-        return task;
     }
 }
