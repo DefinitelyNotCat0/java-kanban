@@ -1,4 +1,4 @@
-package kanban.model;
+package kanban.exception;
 
 public class ManagerSaveException extends RuntimeException {
 

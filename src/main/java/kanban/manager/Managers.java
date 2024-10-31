@@ -7,8 +7,8 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public static FileBackedTaskManager getFileBackedTaskManager(File file) {
-        return new FileBackedTaskManager(file);
+    public static FileBackedTaskManager getFileBackedTaskManager() {
+        return new FileBackedTaskManager(new File("data.csv"));
     }
 
     public static HistoryManager getDefaultHistory() {
