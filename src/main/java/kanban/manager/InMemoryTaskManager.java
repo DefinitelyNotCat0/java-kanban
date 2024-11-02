@@ -48,11 +48,6 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setId(getNextId());
         }
 
-        if (doesTaskIntersect(epic)) {
-            throw new CreateTaskException(epic, "Найдены пересечения. Эпик не создан");
-        }
-
-        addPrioritizedTasks(epic);
         epicHashMap.put(epic.getId(), epic);
         return epic.getId();
     }
@@ -101,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
         epicHashMap.clear();
         subTaskHashMap.clear();
         new ArrayList<>(prioritizedTasks).forEach(epic -> {
-            if (TaskType.EPIC.equals(epic.getTaskType())) {
+            if (TaskType.SUBTASK.equals(epic.getTaskType())) {
                 prioritizedTasks.remove(epic);
             }
         });
@@ -170,7 +165,6 @@ public class InMemoryTaskManager implements TaskManager {
     // Удалить эпик по идентификатору
     @Override
     public void deleteEpicById(Long id) {
-        prioritizedTasks.remove(epicHashMap.get(id));
         // Удаляем связанные подзадачи
         epicHashMap.get(id).getSubTaskList()
                 .forEach(subTask -> subTaskHashMap.remove(subTask.getId()));
@@ -213,10 +207,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (!epicHashMap.containsKey(epic.getId())) {
             throw new NoSuchElementException(
                     String.format("Эпик с id %d не найден. Обновление не применено", epic.getId()));
-        }
-
-        if (doesTaskIntersect(epic)) {
-            throw new UpdateTaskException(epic, "Найдены пересечения. Эпик не обновлен");
         }
 
         // Обновляем эпик
@@ -320,9 +310,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         return prioritizedTasks.stream()
                 // Не проверяем пересечения с той же задачей, которую обновлеям
-                // А так же эпики, т.к. их время зависит от подзадач, которые проходят эту проверку
-                .filter(prioritizedTask -> !prioritizedTask.getId().equals(task.getId()) &&
-                        !TaskType.EPIC.equals(task.getTaskType()))
+                .filter(prioritizedTask -> !prioritizedTask.getId().equals(task.getId()))
                 .anyMatch(prioritizedTask ->
                         (task.getStartTime().equals(prioritizedTask.getStartTime())
                                 && task.getEndTime().equals(prioritizedTask.getEndTime())) ||
