@@ -23,7 +23,7 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task);
 
         assertEquals(1, historyManager.getHistory().size(), "Неверное количество элементов'");
-        assertEquals(task, historyManager.getHistory().get(0), "Задачи не совпадают");
+        assertEquals(task, historyManager.getHistory().getFirst(), "Задачи не совпадают");
 
         Epic epic = new Epic(2L, "Test epic", "Test epic description");
         historyManager.add(epic);
@@ -45,10 +45,10 @@ class InMemoryHistoryManagerTest {
 
         historyManager.add(task);
         assertEquals(1, historyManager.getHistory().size(), "Неверное количество элементов'");
-        assertEquals(task, historyManager.getHistory().get(0), "Задачи не совпадают");
+        assertEquals(task, historyManager.getHistory().getFirst(), "Задачи не совпадают");
 
         historyManager.add(task);
         assertEquals(1, historyManager.getHistory().size(), "Неверное количество элементов'");
-        assertEquals(task, historyManager.getHistory().get(0), "Задачи не совпадают");
+        assertEquals(task, historyManager.getHistory().getFirst(), "Задачи не совпадают");
     }
 }

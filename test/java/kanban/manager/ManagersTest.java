@@ -2,17 +2,17 @@ package kanban.manager;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class ManagersTest {
 
     @Test
     void getDefault() {
-        assertTrue(Managers.getDefault() instanceof InMemoryTaskManager);
+        assertInstanceOf(InMemoryTaskManager.class, Managers.getDefault());
     }
 
     @Test
     void getDefaultHistory() {
-        assertTrue(Managers.getDefaultHistory() instanceof InMemoryHistoryManager);
+        assertInstanceOf(InMemoryHistoryManager.class, Managers.getDefaultHistory());
     }
 }

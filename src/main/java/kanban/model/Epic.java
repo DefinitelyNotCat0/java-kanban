@@ -1,7 +1,10 @@
 package kanban.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class Epic extends Task {
@@ -26,6 +29,31 @@ public class Epic extends Task {
     }
 
     @Override
+    public LocalDateTime getStartTime() {
+        return getSubTaskList().stream()
+                .map(SubTask::getStartTime)
+                .filter(Objects::nonNull)
+                .min(Comparator.naturalOrder())
+                .orElse(null);
+    }
+
+    @Override
+    public Duration getDuration() {
+        return getSubTaskList().stream()
+                .map(SubTask::getDuration)
+                .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return getSubTaskList().stream()
+                .map(SubTask::getStartTime)
+                .filter(Objects::nonNull)
+                .max(Comparator.naturalOrder())
+                .orElse(null);
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
                 "id=" + getId() +
@@ -33,7 +61,10 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", getSubTaskIdArrayList=" + getSubTaskList() +
+                ", startTime=" + getStartTime() +
+                ", duration=" + getDuration().toMinutes() +
+                ", endTime=" + getEndTime() +
+                ", getSubTaskList=" + getSubTaskList() +
                 '}';
     }
 

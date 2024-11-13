@@ -6,11 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import kanban.exception.ManagerSaveException;
 import kanban.model.Epic;
-import kanban.model.ManagerSaveException;
 import kanban.model.SubTask;
 import kanban.model.Task;
 import kanban.model.TaskStatus;
@@ -19,8 +21,9 @@ import kanban.model.TaskType;
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
 
     private static final String CSV_SEPARATOR = ",";
-    private static final String FILE_HEADER =
-            String.format("id%1$stype%1$sname%1$sstatus%1$sdescription%1$sepic", CSV_SEPARATOR);
+    private static final String FILE_HEADER = String.format(
+            "id%1$stype%1$sname%1$sstatus%1$sdescription%1$sstartTime%1$sduration%1$sepic",
+            CSV_SEPARATOR);
     private final File file;
 
     public FileBackedTaskManager(File file) {
@@ -52,14 +55,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     private static String toString(Task task) {
-        String epicId = "";
-        TaskType taskType = TaskType.TASK;
         StringBuilder stringBuilder = new StringBuilder();
 
-        taskType = task.getTaskType();
-        if (TaskType.SUBTASK.equals(taskType)) {
-            epicId = String.valueOf(((SubTask) task).getEpicId());
-        }
+        TaskType taskType = task.getTaskType();
+        String startTime = task.getStartTime() != null ? task.getStartTime().toString() : "";
+        String epicId = TaskType.SUBTASK.equals(taskType) ?
+                String.valueOf(((SubTask) task).getEpicId()) : "";
 
         stringBuilder
                 .append(task.getId()).append(CSV_SEPARATOR)
@@ -67,27 +68,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 .append(task.getName()).append(CSV_SEPARATOR)
                 .append(task.getStatus()).append(CSV_SEPARATOR)
                 .append(task.getDescription()).append(CSV_SEPARATOR)
+                .append(startTime).append(CSV_SEPARATOR)
+                .append(task.getDuration().toMinutes()).append(CSV_SEPARATOR)
                 .append(epicId);
 
         return stringBuilder.toString();
     }
 
     private static Task fromString(String value) {
-        String[] parameters = value.split(CSV_SEPARATOR);
+        String[] parameters = value.split(CSV_SEPARATOR, -1);
         Long id = Long.valueOf(parameters[0]);
         TaskType taskType = TaskType.valueOf(parameters[1]);
         String name = parameters[2];
         TaskStatus taskStatus = TaskStatus.valueOf(parameters[3]);
         String description = parameters[4];
+        LocalDateTime startTime = (parameters[5] != null && !parameters[5].isEmpty()) ? LocalDateTime.parse(parameters[5]) : null;
+        Duration duration = Duration.ofMinutes(Long.parseLong(parameters[6]));
+
 
         Task task;
         if (TaskType.SUBTASK.equals(taskType)) {
-            Long epicId = Long.valueOf(parameters[5]);
-            task = new SubTask(id, name, description, taskStatus, epicId);
+            Long epicId = Long.valueOf(parameters[7]);
+            task = new SubTask(id, name, description, taskStatus, epicId, startTime, duration);
         } else if (TaskType.EPIC.equals(taskType)) {
             task = new Epic(id, name, description);
         } else {
-            task = new Task(id, name, description, taskStatus);
+            task = new Task(id, name, description, taskStatus, startTime, duration);
         }
 
         return task;
