@@ -199,6 +199,8 @@ public class InMemoryTaskManager implements TaskManager {
         currentTask.setName(task.getName());
         currentTask.setDescription(task.getDescription());
         currentTask.setStatus(task.getStatus());
+        currentTask.setStartTime(task.getStartTime());
+        currentTask.setDuration(task.getDuration());
     }
 
     // Обновить эпик
@@ -232,6 +234,8 @@ public class InMemoryTaskManager implements TaskManager {
         currentSubTask.setName(subTask.getName());
         currentSubTask.setDescription(subTask.getDescription());
         currentSubTask.setStatus(subTask.getStatus());
+        currentSubTask.setStartTime(subTask.getStartTime());
+        currentSubTask.setDuration(subTask.getDuration());
 
         Long oldEpicId = currentSubTask.getEpicId();
         Long newEpicId = subTask.getEpicId();
