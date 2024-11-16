@@ -10,19 +10,19 @@ import com.google.gson.stream.JsonWriter;
 
 public class LocalDateTimeTypeAdapter extends TypeAdapter<LocalDateTime> {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @Override
     public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
         if (localDateTime == null) {
             jsonWriter.nullValue();
         } else {
-            jsonWriter.value(localDateTime.format(formatter));
+            jsonWriter.value(localDateTime.format(FORMATTER));
         }
     }
 
     @Override
     public LocalDateTime read(JsonReader jsonReader) throws IOException {
-        return LocalDateTime.parse(jsonReader.nextString(), formatter);
+        return LocalDateTime.parse(jsonReader.nextString(), FORMATTER);
     }
 }

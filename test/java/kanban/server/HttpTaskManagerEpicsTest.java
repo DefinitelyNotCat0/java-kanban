@@ -26,9 +26,6 @@ public class HttpTaskManagerEpicsTest {
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
 
-    public HttpTaskManagerEpicsTest() throws IOException {
-    }
-
     @BeforeEach
     public void setUp() {
         manager.deleteAllTasks();
@@ -104,7 +101,7 @@ public class HttpTaskManagerEpicsTest {
     @Test
     public void getEpics() throws IOException, InterruptedException {
         Long epic1Id = manager.createEpic(new Epic("Epic 1", "Testing epic 1"));
-        Long epic2Id = manager.createEpic(new Epic("Epic 2", "Testing epic 2"));
+        manager.createEpic(new Epic("Epic 2", "Testing epic 2"));
 
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/epics/" + epic1Id);

@@ -28,8 +28,8 @@ import static kanban.model.TaskStatus.NEW;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
-    private static HttpServer httpServer;
     private final TaskManager taskManager;
+    private HttpServer httpServer;
 
     public HttpTaskServer(TaskManager taskManager) {
         this.taskManager = taskManager;

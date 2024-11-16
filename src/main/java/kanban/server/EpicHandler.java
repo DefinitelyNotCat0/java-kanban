@@ -8,6 +8,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import kanban.HttpTaskServer;
 import kanban.exception.CreateTaskException;
+import kanban.exception.EmptyRequestBodyException;
 import kanban.exception.UpdateTaskException;
 import kanban.manager.TaskManager;
 import kanban.model.Epic;
@@ -103,7 +104,11 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
 
     private void handlePostEpic(HttpExchange exchange) throws IOException {
         Gson gson = HttpTaskServer.getGson();
-        Epic epic = gson.fromJson(getRequestBody(exchange), Epic.class);
+        String requestBody = getRequestBody(exchange);
+        if (requestBody == null || requestBody.isEmpty() || requestBody.length() == 2) {
+            throw new EmptyRequestBodyException();
+        }
+        Epic epic = gson.fromJson(requestBody, Epic.class);
         taskManager.createEpic(epic);
         sendSuccess(exchange);
     }

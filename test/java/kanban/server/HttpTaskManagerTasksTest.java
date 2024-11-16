@@ -30,9 +30,6 @@ public class HttpTaskManagerTasksTest {
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
 
-    public HttpTaskManagerTasksTest() throws IOException {
-    }
-
     @BeforeEach
     public void setUp() {
         manager.deleteAllTasks();
@@ -164,7 +161,7 @@ public class HttpTaskManagerTasksTest {
                 TaskStatus.NEW,
                 LocalDateTime.of(2024, Month.SEPTEMBER, 1, 15, 30),
                 Duration.ofMinutes(10)));
-        Long task2Id = manager.createTask(new Task("Test 2", "Testing task 2",
+        manager.createTask(new Task("Test 2", "Testing task 2",
                 TaskStatus.NEW,
                 LocalDateTime.of(2024, Month.SEPTEMBER, 2, 15, 30),
                 Duration.ofMinutes(10)));

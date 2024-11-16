@@ -11,7 +11,6 @@ import java.time.Month;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import kanban.HttpTaskServer;
 import kanban.manager.InMemoryTaskManager;
 import kanban.manager.TaskManager;
@@ -30,9 +29,6 @@ public class HttpTaskManagerPrioritizedTest {
     TaskManager manager = new InMemoryTaskManager();
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerPrioritizedTest() throws IOException {
-    }
 
     @BeforeEach
     public void setUp() {
@@ -72,8 +68,5 @@ public class HttpTaskManagerPrioritizedTest {
         assertEquals(200, response.statusCode());
         assertEquals(manager.getPrioritizedTasks().size(), responseTasks.size());
         assertEquals(expectedTasks, responseTasks);
-    }
-
-    static class TaskListTypeToken extends TypeToken<List<Task>> {
     }
 }

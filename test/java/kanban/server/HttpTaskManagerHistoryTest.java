@@ -8,7 +8,6 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import kanban.HttpTaskServer;
 import kanban.manager.InMemoryTaskManager;
 import kanban.manager.TaskManager;
@@ -29,9 +28,6 @@ public class HttpTaskManagerHistoryTest {
     TaskManager manager = new InMemoryTaskManager();
     HttpTaskServer taskServer = new HttpTaskServer(manager);
     Gson gson = HttpTaskServer.getGson();
-
-    public HttpTaskManagerHistoryTest() throws IOException {
-    }
 
     @BeforeEach
     public void setUp() {
@@ -79,8 +75,5 @@ public class HttpTaskManagerHistoryTest {
         assertEquals(200, response.statusCode());
         assertEquals(manager.getHistory().size(), responseTasks.size());
         assertEquals(expectedTasks, responseTasks);
-    }
-
-    static class TaskListTypeToken extends TypeToken<List<Task>> {
     }
 }

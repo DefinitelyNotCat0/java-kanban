@@ -8,6 +8,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import kanban.HttpTaskServer;
 import kanban.exception.CreateTaskException;
+import kanban.exception.EmptyRequestBodyException;
 import kanban.exception.UpdateTaskException;
 import kanban.manager.TaskManager;
 import kanban.model.SubTask;
@@ -103,7 +104,11 @@ public class SubTaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private void handlePostSubTask(HttpExchange exchange) throws IOException {
         Gson gson = HttpTaskServer.getGson();
-        SubTask subTask = gson.fromJson(getRequestBody(exchange), SubTask.class);
+        String requestBody = getRequestBody(exchange);
+        if (requestBody == null || requestBody.isEmpty() || requestBody.length() == 2) {
+            throw new EmptyRequestBodyException();
+        }
+        SubTask subTask = gson.fromJson(requestBody, SubTask.class);
         if (subTask.getId() == null) {
             taskManager.createSubTask(subTask);
         } else {
